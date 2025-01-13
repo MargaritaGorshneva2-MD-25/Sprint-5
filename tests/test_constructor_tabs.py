@@ -1,37 +1,29 @@
 import pytest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from locators import Locators
-import time
-
-base_url = "https://stellarburgers.nomoreparties.site/"
-
-
-@pytest.fixture(scope="function")
-def driver():
-    driver = webdriver.Chrome()
-    driver.maximize_window()
-    yield driver
 
 
 @pytest.mark.parametrize("tab_name, locator", [
-    ("Булки", Locators.buns_tab),
-    ("Соусы", Locators.sauces_tab),
-    ("Начинки", Locators.fillings_tab),
+    ("Булки", Locators.BUNS_TAB),
+    ("Соусы", Locators.SAUCES_TAB),
+    ("Начинки", Locators.FILLINGS_TAB),
 ])
-def test_ingredient_tab_scroll(driver, tab_name, locator):
-    driver.get(base_url)
+def test_ingredient_tab_switch(driver, tab_name, locator):
+    # Открываем страницу в фикстуре conftest.py
 
-    # Получаем начальное положение раздела до скролла (не обязательно, но может быть полезно для отладки)
-    section_locator = Locators.get_section_locator(tab_name)
-    initial_location = driver.find_element(By.XPATH, section_locator).location
-
-    # Клик по вкладке ингредиента
-    tab_element = driver.find_element(By.XPATH, locator)
+    # Ожидаем кликабельности вкладки
+    tab_element = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(locator)
+    )
     tab_element.click()
-    time.sleep(1) # небольшая задержка, чтобы дать время для скролла. Возможно, потребуется adjust
 
-    # Проверка, что раздел проскроллился
-    # (текущее положение раздела отличается от начального)
-    final_location = driver.find_element(By.XPATH, section_locator).location
-    assert initial_location != final_location, f"Раздел '{tab_name}' не проскроллился"
+    # Ожидаем появления активного класса у соответствующей секции
+    section_locator = Locators.get_section_locator(tab_name)
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((section_locator[0], section_locator[1] + ".tab_selected")) # Проверяем наличие класса tab_selected (или аналогичного)
+    )
+
+    # Проверка, что секция стала активной (содержит класс "tab_selected" или аналогичный)
+    active_section = driver.find_element(*section_locator)
+    assert "tab_selected" in active_section.get_attribute("class"), f"Раздел '{tab_name}' не стал активным"

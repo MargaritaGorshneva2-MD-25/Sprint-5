@@ -1,49 +1,63 @@
 import pytest
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from URL import BASE_URL
 from locators import Locators
 
-base_url = "https://stellarburgers.nomoreparties.site/"
-
-
-@pytest.fixture(scope="function")
-def driver():
-    driver = webdriver.Chrome()
-    driver.maximize_window()
-    yield driver
-
-
-
 def test_personal_area_from_main_page_login_button(driver):
-    driver.get(base_url)
-    driver.find_element(By.XPATH, Locators.login_button_main_page).click() # Кнопка "Войти в аккаунт"
-    driver.find_element(By.XPATH, Locators.email_field).send_keys("email@example.com")
-    driver.find_element(By.XPATH, Locators.password_field).send_keys("Пароль123")
-    driver.find_element(By.XPATH, Locators.login_button).click()
+    driver.get(BASE_URL)
+    login_button_main = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(Locators.LOGIN_BUTTON_MAIN_PAGE)
+    )
+    login_button_main.click() # Кнопка "Войти в аккаунт"
+
+    email_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(Locators.EMAIL_FIELD)
+    )
+    email_field.send_keys("margarita_gorshnyova_13444@yandex.ru")
+
+    password_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(Locators.PASSWORD_FIELD)
+    )
+    password_field.send_keys("ваш_пароль") # замените на ваш пароль
+
+    login_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(Locators.LOGIN_BUTTON)
+    )
+
+    login_button.click()
 
     check_personal_area_page_opened(driver)
-    driver.quit()
-
 
 
 
 def test_personal_area_from_main_page_personal_area_button(driver):
-    driver.get(base_url)
-    driver.find_element(By.XPATH, Locators.personal_area_button).click()
-    driver.find_element(By.XPATH, Locators.email_field).send_keys("email@example.com")
-    driver.find_element(By.XPATH, Locators.password_field).send_keys("Пароль123")
-    driver.find_element(By.XPATH, Locators.login_button).click()
-    check_personal_area_page_opened(driver)
-    driver.quit()
+    driver.get(BASE_URL)
 
+    personal_area_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(Locators.PERSONAL_AREA_BUTTON)
+    )
+    personal_area_button.click()
+
+    email_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(Locators.EMAIL_FIELD)
+    )
+    email_field.send_keys("margarita_gorshnyova_13444@yandex.ru")
+
+    password_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(Locators.PASSWORD_FIELD)
+    )
+    password_field.send_keys("ваш_пароль") # замените на ваш пароль
+
+    login_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(Locators.LOGIN_BUTTON)
+    )
+
+    login_button.click()
+    check_personal_area_page_opened(driver)
 
 
 def check_personal_area_page_opened(driver):
-    try:
-        WebDriverWait(driver, 5).until(EC.url_contains(base_url + "account")) # Проверяем часть URL, т.к. он может меняться
-        # Дополнительные проверки элементов на странице, если необходимо
-    except TimeoutException:
-        pytest.fail("Страница 'Личный кабинет' не открылась")
+    WebDriverWait(driver, 10).until(EC.url_contains(BASE_URL + "account")) # Проверяем часть URL
+    # Здесь можно добавить дополнительные проверки элементов на странице, если необходимо

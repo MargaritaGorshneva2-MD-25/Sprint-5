@@ -6,15 +6,11 @@ class Locators:
     EMAIL_FIELD = (By.NAME, "email")
     PASSWORD_FIELD = (By.CSS_SELECTOR, "input[name='Пароль']")
     REGISTER_BUTTON = (By.XPATH, "//button[text()='Зарегистрироваться']")
-    ERROR_MESSAGE = (By.XPATH, "//*[contains(text(), 'Некорректный пароль')]") # Попробуйте уточнить локатор, если возможно
-    # login_redirect_url - удалил, т.к. URL хранятся в URL.py
 
     # Вход/Личный кабинет
-    LOGIN_BUTTON_MAIN_PAGE = (By.XPATH, "//button[text()='Войти в аккаунт']")
+    LOGIN_BUTTON_MAIN_PAGE = (By.XPATH, "//button[contains(text(), 'Войти')]")
     PERSONAL_AREA_BUTTON = (By.CSS_SELECTOR, "a[href='/account']")
     LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти']")
-    # personal_area_page_url - удалил, т.к. URL хранятся в URL.py
-
 
     # Шапка
     LOGO_IMAGE = (By.CSS_SELECTOR, ".AppHeader_header__logo")
@@ -23,24 +19,25 @@ class Locators:
     LOGOUT_BUTTON = (By.XPATH, "//button[text()='Выйти']")
 
     # Формы входа/регистрации/восстановления пароля
-    LOGIN_LINK_REGISTRATION = (By.LINK_TEXT, "Войти")
-    LOGIN_LINK_FORGOT_PASSWORD = (By.LINK_TEXT, "Войти") # Убедитесь, что это корректный локатор
-    # login_page_url - удалил, т.к. URL хранятся в URL.py
+    LOGIN_LINK_REGISTRATION_FORM = (By.XPATH, "//a[@href='/login']")
+    LOGIN_LINK_FORGOT_PASSWORD_FORM = (By.XPATH, "//a[@href='/forgot-password']")
 
     # Ингредиенты
-    BUNS_TAB = (By.XPATH, "//span[text()='Булки']")
-    SAUCES_TAB = (By.XPATH, "//span[text()='Соусы']")
-    FILLINGS_TAB = (By.XPATH, "//span[text()='Начинки']")
+    BUNS_TAB = (By.CSS_SELECTOR, "[data-tab='bun']")
+    SAUCES_TAB = (By.CSS_SELECTOR, "[data-tab='sauce']")
+    FILLINGS_TAB = (By.CSS_SELECTOR, "[data-tab='main']")
 
+    # Секции ингредиентов (для проверки скролла)
     @staticmethod
     def get_section_locator(tab_name):
-        # Используем CSS селекторы и data-атрибуты, если доступны
         if tab_name == "Булки":
-            return (By.CSS_SELECTOR, "[data-tab='bun']")
+            return (By.CSS_SELECTOR, "[data-section='bun']")
         elif tab_name == "Соусы":
-            return (By.CSS_SELECTOR, "[data-tab='sauce']")
+            return (By.CSS_SELECTOR, "[data-section='sauce']")
         elif tab_name == "Начинки":
-            return (By.CSS_SELECTOR, "[data-tab='main']")
+            return (By.CSS_SELECTOR, "[data-section='main']")
         else:
-            raise ValueError(f"Неправильное имя вкладки: {tab_name}")
+            raise ValueError(f"Неизвестное название вкладки: {tab_name}")
 
+    # Личный кабинет
+    PROFILE_LINK = (By.XPATH, "//a[@href='/account/profile']")

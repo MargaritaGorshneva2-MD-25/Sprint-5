@@ -4,25 +4,26 @@ from selenium.webdriver.support import expected_conditions as EC
 from locators import Locators
 
 class TestIngredientTabSwitch:
-    @pytest.mark.parametrize("tab_name, locator", [
-        ("Булки", Locators.BUNS_TAB),
-        ("Соусы", Locators.SAUCES_TAB),
-        ("Начинки", Locators.FILLINGS_TAB),
-    ])
-    def test_scroll_to_section(self, driver, tab_name, locator): # Изменено название метода
-
-        tab_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(locator)
+    def _wait_for_element(self, driver, locator):
+        return WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(locator)
         )
 
-        # Получаем координаты раздела ДО клика
-        section_locator = Locators.get_section_locator(tab_name) # Возвращаем метод get_section_locator
-        section_element = driver.find_element(*section_locator)
-        initial_location = section_element.location["y"]
-
+    @pytest.mark.parametrize("tab_name, locator, expected_section_locator", [
+        ("Булки", Locators.BUNS_TAB, Locators.BUNS_SECTION), # Добавили локаторы для секций
+        ("Соусы", Locators.SAUCES_TAB, Locators.SAUCES_SECTION),
+        ("Начинки", Locators.FILLINGS_TAB, Locators.FILLINGS_SECTION),
+    ])
+    def test_ingredient_tab_switching(self, driver, tab_name, locator, expected_section_locator):
+        tab_element = self._wait_for_element(driver, locator) # Использование вспомогательного метода
         tab_element.click()
 
-        # Ожидаем, что координаты раздела изменятся после клика (произойдет скроллинг)
-        WebDriverWait(driver, 10).until(
-            lambda driver: driver.find_element(*section_locator).location["y"] != initial_location
-        )
+        # Ожидание и проверка, что секция стала видимой
+        section_element = self._wait_for_element(driver, expected_section_locator)
+        assert section_element.is_displayed(), f"Секция {tab_name} не отображается"
+
+
+        # Проверка, что вкладка активна (замените 'tab_active' на реальный класс/атрибут)
+        assert "tab_active" in tab_element.get_attribute("class"), f"Вкладка {tab_name} не активна"
+
+

@@ -35,4 +35,3 @@ class TestLogoRedirect: # Создаем тестовый класс
         WebDriverWait(driver, 10).until(EC.url_to_be(BASE_URL))
         assert driver.current_url == BASE_URL, "Переход на страницу Конструктор не выполнен"
 
-

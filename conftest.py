@@ -1,12 +1,14 @@
 import pytest
 from selenium import webdriver
-from URL import BASE_URL
+from selenium.webdriver.chrome.options import Options
 
 
 @pytest.fixture(scope="function")
 def driver():
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+
+    driver = webdriver.Chrome(options=chrome_options)
     driver.maximize_window()
-    driver.get(BASE_URL)
     yield driver
     driver.quit()
+

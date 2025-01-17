@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from URL import BASE_URL
 from locators import Locators
+from config import TEST_EMAIL, TEST_PASSWORD
 
 
 class TestLogout:
@@ -22,20 +23,15 @@ class TestLogout:
 
         WebDriverWait(driver, 10).until(EC.url_contains(BASE_URL + "account/profile"))
 
-
     def test_logout(self, driver):
-        self._login(driver, "margarita_gorshnyova_13444@yandex.ru", "ваш_пароль") # Логин
+        self._login(driver, TEST_EMAIL, TEST_PASSWORD)
 
-        # Клик по кнопке "Выйти"
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(Locators.LOGOUT_BUTTON)
         ).click()
 
-        # Ожидание появления кнопки "Войти в аккаунт" после выхода
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(Locators.LOGIN_BUTTON_MAIN_PAGE)
         )
 
-        # Проверка наличия кнопки "Войти в аккаунт" после выхода
         assert driver.find_element(*Locators.LOGIN_BUTTON_MAIN_PAGE).is_displayed(), "Кнопка 'Войти в аккаунт' не отображается после выхода"
-

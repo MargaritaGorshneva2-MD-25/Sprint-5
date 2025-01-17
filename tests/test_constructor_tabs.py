@@ -26,4 +26,3 @@ class TestIngredientTabSwitch:
         # Проверка, что вкладка активна (замените 'tab_active' на реальный класс/атрибут)
         assert "tab_active" in tab_element.get_attribute("class"), f"Вкладка {tab_name} не активна"
 
-

@@ -34,4 +34,3 @@ class Locators:
 
     # Личный кабинет
     PROFILE_LINK = (By.XPATH, "//a[@href='/account/profile']")
-

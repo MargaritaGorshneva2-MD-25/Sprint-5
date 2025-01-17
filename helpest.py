@@ -7,7 +7,7 @@ from locators import Locators
 
 
 def check_profile_page_opened(driver):
-    WebDriverWait(driver, 10).until(EC.url_to_be(BASE_URL + "account/profile"))
+    wait_for_url(driver, BASE_URL + "account/profile")
     assert driver.find_element(*Locators.LOGOUT_BUTTON).is_displayed(), "Страница профиля не открылась."
 
 
@@ -15,3 +15,21 @@ def generate_random_email():
     username = ''.join(random.choices(string.ascii_lowercase, k=10))
     domain = "yandex.ru"
     return f"{username}@{domain}"
+
+
+def wait_for_url(driver, expected_url, timeout=10):
+    WebDriverWait(driver, timeout).until(EC.url_to_be(expected_url))
+    assert driver.current_url == expected_url, f"Ожидался URL: {expected_url}, текущий URL: {driver.current_url}"
+
+
+def click_and_check_url(driver, locator, expected_url, base_url=None):
+    """Кликает на элемент и проверяет, что URL соответствует ожидаемому."""
+    if base_url:
+        driver.get(base_url)
+        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(locator))
+    else:
+        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(locator))
+
+    element.click()
+    WebDriverWait(driver, 10).until(EC.url_to_be(expected_url))
+    assert driver.current_url == expected_url, f"Ожидался URL: {expected_url}, текущий URL: {driver.current_url}"

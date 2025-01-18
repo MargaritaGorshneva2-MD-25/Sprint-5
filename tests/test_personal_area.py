@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from locators import Locators
 from URL import BASE_URL
 from config import TEST_EMAIL, TEST_PASSWORD
-from helpest import check_profile_page_opened # Импортируем функцию
+from helpest import check_profile_page_opened
 
 
 class TestPersonalArea:
@@ -36,8 +36,7 @@ class TestPersonalArea:
             EC.presence_of_element_located((Locators.PROFILE_LINK))
         )
         profile_link.click()
-        check_profile_page_opened(driver) # Вызываем функцию проверки
-
+        check_profile_page_opened(driver)
 
     def test_personal_area_from_main_page_personal_area_button(self, driver):
         driver.get(BASE_URL)
@@ -49,4 +48,4 @@ class TestPersonalArea:
             EC.presence_of_element_located((Locators.PROFILE_LINK))
         )
         profile_link.click()
-        check_profile_page_opened(driver) # Вызываем функцию проверки
+        check_profile_page_opened(driver)

@@ -33,3 +33,10 @@ def click_and_check_url(driver, locator, expected_url, base_url=None):
     element.click()
     WebDriverWait(driver, 10).until(EC.url_to_be(expected_url))
     assert driver.current_url == expected_url, f"Ожидался URL: {expected_url}, текущий URL: {driver.current_url}"
+
+
+def wait_for_element(driver, locator, timeout=10):
+    return WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located(locator)
+    )
+

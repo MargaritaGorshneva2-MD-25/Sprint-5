@@ -4,48 +4,29 @@ from selenium.webdriver.support import expected_conditions as EC
 from locators import Locators
 from URL import BASE_URL
 from config import TEST_EMAIL, TEST_PASSWORD
-from helpest import check_profile_page_opened
-
+from helpers import check_profile_page_opened # Исправлено название файла
 
 class TestPersonalArea:
-    def login(self, driver, email, password):
-        email_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(Locators.EMAIL_FIELD)
-        )
-        email_field.send_keys(email)
+    def _wait_for_element(self, driver, locator, timeout=10):
+        return WebDriverWait(driver, timeout).until(EC.presence_of_element_located(locator))
 
-        password_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(Locators.PASSWORD_FIELD)
-        )
-        password_field.send_keys(password)
-
-        login_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(Locators.LOGIN_BUTTON)
-        )
-        login_button.click()
-
-        WebDriverWait(driver, 10).until(EC.url_to_be(BASE_URL + "account"))
+    def _login(self, driver): # Используем данные из config.py напрямую
+        driver.get(BASE_URL + "login")
+        self._wait_for_element(driver, Locators.EMAIL_FIELD).send_keys(TEST_EMAIL)
+        self._wait_for_element(driver, Locators.PASSWORD_FIELD).send_keys(TEST_PASSWORD)
+        self._wait_for_element(driver, Locators.LOGIN_BUTTON).click()
+        WebDriverWait(driver, 10).until(EC.url_contains(BASE_URL + "account"))
 
     def test_personal_area_from_main_page_login_button(self, driver):
         driver.get(BASE_URL)
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(Locators.LOGIN_BUTTON_MAIN_PAGE)
-        ).click()
-        self.login(driver, TEST_EMAIL, TEST_PASSWORD)
-        profile_link = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((Locators.PROFILE_LINK))
-        )
-        profile_link.click()
-        check_profile_page_opened(driver)
+        self._wait_for_element(driver, Locators.LOGIN_BUTTON_MAIN_PAGE).click()
+        self._login(driver) # вызов метода логина
+        self._wait_for_element(driver, Locators.PROFILE_LINK).click()
+        assert check_profile_page_opened(driver) is True, "Страница профиля не открылась" # Добавлено assert
 
     def test_personal_area_from_main_page_personal_area_button(self, driver):
         driver.get(BASE_URL)
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(Locators.PERSONAL_AREA_BUTTON)
-        ).click()
-        self.login(driver, TEST_EMAIL, TEST_PASSWORD)
-        profile_link = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((Locators.PROFILE_LINK))
-        )
-        profile_link.click()
-        check_profile_page_opened(driver)
+        self._wait_for_element(driver, Locators.PERSONAL_AREA_BUTTON).click()
+        self._login(driver) # вызов метода логина
+        self._wait_for_element(driver, Locators.PROFILE_LINK).click()
+        assert check_profile_page_opened(driver) is True, "Страница профиля не открылась" # Добавлено assert

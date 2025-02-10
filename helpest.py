@@ -17,6 +17,11 @@ def generate_random_email():
     return f"{username}@{domain}"
 
 
+def generate_random_string(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
+
 def wait_for_url(driver, expected_url, timeout=10):
     WebDriverWait(driver, timeout).until(EC.url_to_be(expected_url))
     assert driver.current_url == expected_url, f"Ожидался URL: {expected_url}, текущий URL: {driver.current_url}"
@@ -39,4 +44,3 @@ def wait_for_element(driver, locator, timeout=10):
     return WebDriverWait(driver, timeout).until(
         EC.presence_of_element_located(locator)
     )
-

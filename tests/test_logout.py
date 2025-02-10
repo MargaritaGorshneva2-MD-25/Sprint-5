@@ -1,25 +1,21 @@
 import pytest
-from selenium.webdriver.support.ui import WebDriverWait # WebDriverWait нужен для EC.url_contains
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from URL import BASE_URL
 from locators import Locators
-from config import TEST_EMAIL, TEST_PASSWORD
-from helpest import wait_for_element
-
+from helpers import wait_for_element
 
 class TestLogout:
-    def _login(self, driver, email, password):
-        driver.get(BASE_URL + "login")
-        wait_for_element(driver, Locators.EMAIL_FIELD).send_keys(email)
-        wait_for_element(driver, Locators.PASSWORD_FIELD).send_keys(password)
-        wait_for_element(driver, Locators.LOGIN_BUTTON).click()
-        WebDriverWait(driver, 10).until(EC.url_contains("account/profile"))
+    def test_logout(self, logged_in_user):
+        logged_in_user.get(BASE_URL + "account/profile") # Переходим в профиль пользователя, где есть кнопка "Выйти"
 
-    def test_logout(self, driver):
-        self._login(driver, TEST_EMAIL, TEST_PASSWORD)
-
-        logout_button = wait_for_element(driver, Locators.LOGOUT_BUTTON)
+        logout_button = wait_for_element(logged_in_user, Locators.LOGOUT_BUTTON)
         logout_button.click()
 
-        login_button = wait_for_element(driver, Locators.LOGIN_BUTTON_MAIN_PAGE)
-        assert login_button.is_displayed(), "Кнопка 'Войти в аккаунт' не отображается после выхода"
+        WebDriverWait(logged_in_user, 10).until(EC.url_to_be(BASE_URL + "login")) # Ожидаем перенаправления на страницу логина
+        assert logged_in_user.current_url == BASE_URL + "login", "Перенаправление на страницу входа не выполнено после выхода"
+        # Или можно проверить наличие элемента на странице входа, как в исходном варианте:
+        login_button = wait_for_element(logged_in_user, Locators.LOGIN_BUTTON) # Используйте локатор для кнопки на странице логина
+        assert login_button.is_displayed(), "Кнопка 'Войти' не отображается после выхода"
+
+

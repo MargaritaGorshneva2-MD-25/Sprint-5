@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from locators import Locators
 from URL import BASE_URL
-from helpers import generate_random_email, generate_random_string
+from helpest import generate_random_email, generate_random_string
 from config import TEST_PASSWORD # Импорт данных из config.py
 
 

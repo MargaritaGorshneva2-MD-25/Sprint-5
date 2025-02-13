@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from URL import BASE_URL
 from locators import Locators
-from helpers import wait_for_element
+from helpest import wait_for_element
 
 
 class TestStellarBurgersNavigation:  # Более descriptive название класса

@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from locators import Locators
 from URL import BASE_URL
 from config import TEST_EMAIL, TEST_PASSWORD
-from helpers import wait_for_element
+from helpest import wait_for_element
 
 @pytest.fixture(scope="function")
 def driver():

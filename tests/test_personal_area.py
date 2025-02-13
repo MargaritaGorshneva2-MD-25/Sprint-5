@@ -1,7 +1,7 @@
 import pytest
 from locators import Locators
 from URL import BASE_URL
-from helpers import check_profile_page_opened, wait_for_element
+from helpest import check_profile_page_opened, wait_for_element
 
 
 class TestPersonalArea:

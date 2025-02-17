@@ -1,29 +1,27 @@
-import pytest
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+from URL import BASE_URL
 from locators import Locators
 
-class TestIngredientTabSwitch:
-    def _wait_for_element(self, driver, locator):
-        return WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(locator)
-        )
+class TestConstructorSections:
+    def test_go_to_sauces_section(self, driver: WebDriver):
+        driver.get(BASE_URL)
+        driver.find_element(*Locators.FILLINGS_BUTTON).click()
+        WebDriverWait(driver, 5).until(ec.visibility_of_element_located(Locators.FILLINGS_BUTTON))
+        driver.find_element(*Locators.SAUCES_BUTTON).click()
+        WebDriverWait(driver, 10).until(ec.visibility_of_element_located((Locators.SAUCES_MENU)))
+        assert driver.find_element(*Locators.ACTIVE_DIV_IN_CONSTRUCTOR).text == 'Соусы'
 
-    @pytest.mark.parametrize("tab_name, locator, expected_section_locator, expected_active_class", [
-        ("Булки", Locators.BUNS_TAB, Locators.BUNS_SECTION, "tab_active"),
-        ("Соусы", Locators.SAUCES_TAB, Locators.SAUCES_SECTION, "tab_active"),
-        ("Начинки", Locators.FILLINGS_TAB, Locators.FILLINGS_SECTION, "tab_active"),
-    ])
-    def test_ingredient_tab_switching(self, driver, tab_name, locator, expected_section_locator, expected_active_class):
-        # 1. Находим и кликаем на вкладку
-        tab_element = self._wait_for_element(driver, locator)
-        tab_element.click()
+    def test_go_to_fillings_section(self, driver: WebDriver):
+        driver.get(BASE_URL)
+        driver.find_element(*Locators.FILLINGS_BUTTON).click()
+        WebDriverWait(driver, 10).until(ec.visibility_of_element_located((Locators.FILLINGS_MENU)))
+        assert driver.find_element(*Locators.ACTIVE_DIV_IN_CONSTRUCTOR).text == 'Начинки'
 
-        # 2. Ждем, пока секция станет видимой, и проверяем это
-        section_element = self._wait_for_element(driver, expected_section_locator)
-        assert section_element.is_displayed(), f"Секция '{tab_name}' не отображается"
-
-        # 3. Проверяем, что вкладка стала активной
-        assert expected_active_class in tab_element.get_attribute("class"), f"Вкладка '{tab_name}' не активна"
-
-
+    def test_go_to_buns_section(self, driver: WebDriver):
+        driver.get(BASE_URL)
+        driver.find_element(*Locators.BUNS_BUTTON).click()
+        WebDriverWait(driver, 10).until(ec.visibility_of_element_located((Locators.BUNS_MENU)))
+        assert driver.find_element(*Locators.ACTIVE_DIV_IN_CONSTRUCTOR).text == 'Булки'

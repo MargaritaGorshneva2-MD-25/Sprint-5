@@ -1,39 +1,53 @@
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import  By
+
 
 class Locators:
-    # Регистрация
-    NAME_FIELD = (By.NAME, "name")
-    EMAIL_FIELD = (By.NAME, "email")
-    PASSWORD_FIELD = (By.CSS_SELECTOR, "input[name='Пароль']")
-    REGISTER_BUTTON = (By.XPATH, "//button[text()='Зарегистрироваться']")
+    # Локаторы для регистрации
+    LOGIN_ACCOUNT_BUTTON = (By.XPATH, "//div/main/section[2]/div/button[text()='Войти в аккаунт']") # Кнопка Войти в аккаунт
+    REG_BUTTON = (By.XPATH, "//a[text()='Зарегистрироваться']") # Кнопка Зарегистрироваться
+    NAME = (By.XPATH, "//label[text()='Имя']/following-sibling::input") # Плейсхолдер Имя
+    EMAIL = (By.XPATH, "//label[text()='Email']/following-sibling::input") # Плейсхолдер Email
+    PASSWORD = (By.XPATH, "//label[text()='Пароль']/following-sibling::input") # Плейсхолдер Пароль
+    REGISTER_BUTTON = (By.XPATH, "//form[@class='Auth_form__3qKeq mb-20']//button[text()='Зарегистрироваться']") # Кнопка подтверждения регистрации
+    LOGIN_BUTTON_FORM = (By.XPATH, "//button[text()='Войти']") # Кнопка Войти
+    ERROR_TEXT = (By.XPATH, "//p[text()='Некорректный пароль']") # Сообщение об ошибке
 
-    # Вход/Личный кабинет
-    LOGIN_BUTTON_MAIN_PAGE = (By.XPATH, "//button[contains(text(), 'Войти')]")
-    PERSONAL_AREA_BUTTON = (By.CSS_SELECTOR, "a[href='/account']")
-    LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти']")
+    # Локаторы для входа по кнопке "Войти в аккаунт"
+    LOGIN_ACCOUNT_BUTTON = (By.XPATH, "//div/main/section[2]/div/button[text()='Войти в аккаунт']") # Кнопка Войти в аккаунт
+    PLACE_ORDER_BUTTON = (By.XPATH, "//button[text()='Оформить заказ']") # Кнопка Оформит заказ
 
-    # Шапка
-    LOGO_IMAGE = (By.CSS_SELECTOR, ".AppHeader_header__logo")
-    CONSTRUCTOR_LINK = (By.XPATH, "//a[@href='/' and contains(text(), 'Конструктор')]")
+    # Локаторы для входа по кнопке "Личный кабинет"
+    PERSONAL_ACCOUNT_BUTTON = (By.XPATH, "//p[text()='Личный Кабинет']")  # Кнопка Личный кабинет
 
-    # Выход
-    LOGOUT_BUTTON = (By.XPATH, "//button[text()='Выйти']")
+    # Локаторы для входа по кнопке в форме регистрации
+    LINK_LOGIN = (By.XPATH, "//a[starts-with(@ href,'/login')]")
 
-    # Формы входа/регистрации/восстановления пароля
-    LOGIN_LINK_REGISTRATION_FORM = (By.XPATH, "//a[@href='/login']")
-    LOGIN_LINK_FORGOT_PASSWORD_FORM = (By.XPATH, "//a[@href='/forgot-password']")
-    LOGIN_LINK_FORGOT_PASSWORD_FORM_2 = (By.XPATH, "//a[@href='/login']")
+    # Локаторы для входа по кнопке в форме восстановления пароля
+    FORGOT_PASSWORD_LINK = (By.XPATH, "//a[starts-with(@ href,'/forgot-password')]")
 
+    # Локатор перехода в Личный кабинет
+    PROFILE = (By.XPATH, "//a[starts-with(@ href,'/account/profile')]")
 
-    # Ингредиенты
-    BUNS_TAB = (By.CSS_SELECTOR, "[data-tab='bun']")
-    SAUCES_TAB = (By.CSS_SELECTOR, "[data-tab='sauce']")
-    FILLINGS_TAB = (By.CSS_SELECTOR, "[data-tab='main']")
+    # Локатор перехода из Личного кабинета в Конструктор
+    CONSTRUCTOR = (By.XPATH, "//p[text()='Конструктор']")
 
-    # Секции ингредиентов
-    BUNS_SECTION = (By.CSS_SELECTOR, "[data-section='bun']")
-    SAUCES_SECTION = (By.CSS_SELECTOR, "[data-section='sauce']")
-    FILLINGS_SECTION = (By.CSS_SELECTOR, "[data-section='main']")
+    # Локатор перехода в Конструктор по Логотипу
+    LOGO = (By.XPATH, "//a[starts-with(@ href,'/')]")
 
-    # Личный кабинет
-    PROFILE_LINK = (By.XPATH, "//a[@href='/account/profile']")
+    # Локатор для выхода
+    LOGOUT_BUTTON = (By.XPATH, "//button[text()='Выход']")
+
+    # Локатор для перехода к соусам
+    SAUCES_BUTTON = (By.XPATH, "//section[@class='BurgerIngredients_ingredients__1N8v2']//span[text()='Соусы']") # Кнопка Соусы
+    SAUCES_MENU = (By.XPATH, "//div[@class='BurgerIngredients_ingredients__menuContainer__Xu3Mo']//h2[text()='Соусы']") # Меню Соусы
+
+    # Локатор для перехода к начинкам
+    FILLINGS_BUTTON = (By.XPATH, "//section[@class='BurgerIngredients_ingredients__1N8v2']//span[text()='Начинки']")  # Кнопка Начинки
+    FILLINGS_MENU = (By.XPATH, "//div[@class='BurgerIngredients_ingredients__menuContainer__Xu3Mo']//h2[text()='Начинки']")  # Меню Начинки
+
+    # Локатор для перехода к булкам
+    BUNS_BUTTON = (By.XPATH, "//section[@class='BurgerIngredients_ingredients__1N8v2']//span[text()='Булки']")  # Кнопка Булки
+    BUNS_MENU = (By.XPATH,"//div[@class='BurgerIngredients_ingredients__menuContainer__Xu3Mo']//h2[text()='Булки']")  # Меню Булки
+
+    # Локатор для раздела конструктор
+    ACTIVE_DIV_IN_CONSTRUCTOR = By.XPATH, './/div[contains(@class, "current")]/span'

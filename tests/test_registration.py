@@ -1,40 +1,46 @@
 import pytest
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from helpest import generate_registration_data
 from locators import Locators
 from URL import BASE_URL
-from helpest import generate_random_email, generate_random_string
-from config import TEST_PASSWORD # Импорт данных из config.py
-
 
 class TestRegistration:
-    def test_successful_registration(self, driver):
-        driver.get(BASE_URL + "register")
-        random_email = generate_random_email() # Генерация уникального email
-        name = generate_random_string(10) # генерация имени
-        self._fill_registration_form(driver, name, random_email, TEST_PASSWORD)
 
-        current_url = driver.current_url
+    @pytest.mark.parametrize("name, email, password, expected_result", [
+        ("Test User", generate_registration_data()['email'], "Password123!", "success"),
+        ("Test User", generate_registration_data()['email'], "123", "incorrect_password"),
+        ("", generate_registration_data()['email'], "Password123!", "empty_name"),
+        ("Test User", "", "Password123!", "empty_email"),
+        ("Test User", "invalid_email", "Password123!", "invalid_email"),
+        ("Test User", generate_registration_data()['email'], "", "empty_password"), # Добавлен тест на пустой пароль
+    ])
+    def test_registration(self, driver, name, email, password, expected_result):
+        driver.get(BASE_URL + "register") # Используем BASE_URL
+
+        driver.find_element(*Locators.NAME).send_keys(name)
+        driver.find_element(*Locators.EMAIL).send_keys(email)
+        driver.find_element(*Locators.PASSWORD).send_keys(password)
         driver.find_element(*Locators.REGISTER_BUTTON).click()
 
-        WebDriverWait(driver, 10).until(EC.url_changes(current_url))
-        assert driver.current_url == BASE_URL + "login", "Регистрация не удалась"
+        if expected_result == "success":
+            # Ждем появления кнопки "Войти" на главной странице после редиректа
+            WebDriverWait(driver, 10).until(EC.url_to_be(BASE_URL)) # Ожидаем редирект на главную
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable(Locators.LOGIN_BUTTON_FORM))
+            assert driver.find_element(*Locators.LOGIN_BUTTON_FORM).is_displayed()
 
-    def test_incorrect_password_registration(self, driver):
-        driver.get(BASE_URL + "register")
-        random_email = generate_random_email()
-        name = generate_random_string(10) # генерация имени
-        short_password = "123"
-        self._fill_registration_form(driver, name, random_email, short_password)
-
-        current_url = driver.current_url
-        driver.find_element(*Locators.REGISTER_BUTTON).click()
-
-        WebDriverWait(driver, 5).until(EC.url_to_be(current_url)) # Ожидаем, что URL *не* изменится
-        assert driver.current_url == current_url, "Регистрация прошла успешно с коротким паролем, хотя не должна была"
-
-    def _fill_registration_form(self, driver, name, email, password):
-         driver.find_element(*Locators.NAME_FIELD).send_keys(name)
-         driver.find_element(*Locators.EMAIL_FIELD).send_keys(email)
-         driver.find_element(*Locators.PASSWORD_FIELD).send_keys(password)
-
+        elif expected_result == "incorrect_password":
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located(Locators.ERROR_TEXT))
+            assert driver.find_element(*Locators.ERROR_TEXT).text == "Некорректный пароль"
+        elif expected_result == "empty_name":
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located(Locators.ERROR_TEXT))
+            assert driver.find_element(*Locators.ERROR_TEXT).text == "Имя не может быть пустым."
+        elif expected_result == "empty_email":
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located(Locators.ERROR_TEXT))
+            assert driver.find_element(*Locators.ERROR_TEXT).text == "Email не может быть пустым."
+        elif expected_result == "invalid_email":
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located(Locators.ERROR_TEXT))
+            assert driver.find_element(*Locators.ERROR_TEXT).text == "Некорректный Email"
+        elif expected_result == "empty_password": # Проверка на пустой пароль
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located(Locators.ERROR_TEXT))
+            assert driver.find_element(*Locators.ERROR_TEXT).text == "Некорректный пароль"

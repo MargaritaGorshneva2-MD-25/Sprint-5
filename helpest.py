@@ -21,6 +21,12 @@ def generate_random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
+def generate_registration_data():
+    # Используем уже существующую функцию для email
+    email = generate_random_email()
+    password = generate_random_string(10) # генерируем случайный пароль длиной 10
+    name = generate_random_string(6) # генерируем случайное имя длиной 6
+    return {'name': name, 'email': email, 'password': password}
 
 def wait_for_url(driver, expected_url, timeout=10):
     WebDriverWait(driver, timeout).until(EC.url_to_be(expected_url))
@@ -44,3 +50,4 @@ def wait_for_element(driver, locator, timeout=10):
     return WebDriverWait(driver, timeout).until(
         EC.presence_of_element_located(locator)
     )
+

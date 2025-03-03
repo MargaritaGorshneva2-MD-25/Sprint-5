@@ -1,45 +1,39 @@
-import pytest
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from locators import Locators
-from helptest import login
 
-
-def test_navigation_buns(driver):
-    login(driver)
-    buns_button = WebDriverWait(driver, 20).until(
+def test_navigation_buns(authorized_driver):
+    buns_button = WebDriverWait(authorized_driver, 20).until(
         EC.presence_of_element_located(Locators.BUNS_BUTTON)
     )
-    driver.execute_script("arguments[0].scrollIntoView();", buns_button)
-    driver.execute_script("arguments[0].click();", buns_button)
+    authorized_driver.execute_script("arguments[0].scrollIntoView();", buns_button)
+    authorized_driver.execute_script("arguments[0].click();", buns_button)
 
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(Locators.BUNS_MENU)
+    buns_menu = WebDriverWait(authorized_driver, 10).until(
+        EC.presence_of_element_located(Locators.BUNS_MENU)
     )
+    assert buns_menu.is_displayed(), "Меню 'Булки' не отображается"
 
-
-def test_navigation_sauces(driver):
-    login(driver)
-    sauces_button = WebDriverWait(driver, 20).until(
+def test_navigation_sauces(authorized_driver):
+    sauces_button = WebDriverWait(authorized_driver, 20).until(
         EC.presence_of_element_located(Locators.SAUCES_BUTTON)
     )
-    driver.execute_script("arguments[0].scrollIntoView();", sauces_button)
-    driver.execute_script("arguments[0].click();", sauces_button)
+    authorized_driver.execute_script("arguments[0].scrollIntoView();", sauces_button)
+    authorized_driver.execute_script("arguments[0].click();", sauces_button)
 
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(Locators.SAUCES_MENU)
+    sauces_menu = WebDriverWait(authorized_driver, 10).until(
+        EC.presence_of_element_located(Locators.SAUCES_MENU)
     )
+    assert sauces_menu.is_displayed(), "Меню 'Соусы' не отображается"
 
-
-def test_navigation_fillings(driver):
-    login(driver)
-    fillings_button = WebDriverWait(driver, 20).until(
+def test_navigation_fillings(authorized_driver):
+    fillings_button = WebDriverWait(authorized_driver, 20).until(
         EC.presence_of_element_located(Locators.FILLINGS_BUTTON)
     )
-    driver.execute_script("arguments[0].scrollIntoView();", fillings_button)
-    driver.execute_script("arguments[0].click();", fillings_button)
+    authorized_driver.execute_script("arguments[0].scrollIntoView();", fillings_button)
+    authorized_driver.execute_script("arguments[0].click();", fillings_button)
 
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(Locators.FILLINGS_MENU)
+    fillings_menu = WebDriverWait(authorized_driver, 10).until(
+        EC.presence_of_element_located(Locators.FILLINGS_MENU)
     )
+    assert fillings_menu.is_displayed(), "Меню 'Начинки' не отображается"

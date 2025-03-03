@@ -17,5 +17,5 @@ def test_personal_account_button_redirect_unauthenticated(driver):
     # Явное ожидание перехода на страницу входа
     WebDriverWait(driver, 10).until(EC.url_to_be(LOGIN_URL))
 
-
-
+    # Проверка: URL должен быть LOGIN_URL после перенаправления
+    assert driver.current_url == LOGIN_URL
